@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Correio Elegante 💌</title>
+  <style>
+    :root {
+      --bg: #121214;
+      --card: #202024;
+      --input: #161618;
+      --primary: #e11d48;
+      --primary-hover: #be123c;
+      --text: #f4f4f5;
+      --muted: #a1a1aa;
+      --border: #323238;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 20px;
+    }
+
+    .container {
+      background-color: var(--card);
+      width: 100%;
+      max-width: 460px;
+      padding: 24px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      margin-top: 10px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      font-size: 1.65rem;
+      margin-bottom: 4px;
+    }
+
+    .header p {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 6px;
+      background-color: var(--input);
+      padding: 5px;
+      border-radius: 12px;
+      margin-bottom: 22px;
+      border: 1px solid var(--border);
+    }
+
+    .tab-btn {
+      background: transparent;
+      color: var(--muted);
+      border: none;
+      padding: 10px 6px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .tipo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .tipo-card {
+      background-color: var(--input);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tipo-card.selected {
+      border-color: var(--primary);
+      background-color: rgba(225, 29, 72, 0.1);
+    }
+
+    .tipo-card span {
+      display: block;
+      font-size: 1.4rem;
+      margin-bottom: 4px;
+    }
+
+    .tipo-card strong {
+      display: block;
+      font-size: 0.88rem;
+      margin-bottom: 2px;
+    }
+
+    .tipo-card small {
+      color: var(--muted);
+      font-size: 0.75rem;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      background-color: var(--input);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--primary);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .hint {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 5px;
+    }
+
+    button.action-btn {
+      width: 100%;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 13px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    button.action-btn:hover {
+      background-color: var(--primary-hover);
+    }
+
+    button.action-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .status {
+      margin-top: 14px;
+      padding: 11px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 0.85rem;
+      display: none;
+    }
+
+    .status.success {
+      display: block;
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .status.error {
+      display: block;
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .msg-list {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .msg-card {
+      background-color: var(--input);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--primary);
+      padding: 14px;
+      border-radius: 10px;
+    }
+
+    .msg-card .meta {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .msg-card .body {
+      font-size: 0.95rem;
+      line-height: 1.45;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h1>Correio Elegante 💌</h1>
+      <p>100% anônimo • Assine só se quiser</p>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="mudarAba('enviar', this)">💌 Enviar</button>
+      <button class="tab-btn" onclick="mudarAba('ler', this)">🔑 Meu Envelope</button>
+      <button class="tab-btn" onclick="mudarAba('criar', this)">➕ Criar Envelope</button>
+    </div>
+
+    <div id="aba-enviar" class="tab-content active">
+      <form id="formEnviar">
+        <label>Para onde vai o recado?</label>
+        <div class="tipo-grid">
+          <div class="tipo-card selected" id="cardGeral" onclick="selecionarTipo('Geral')">
+            <span>🎙️</span>
+            <strong>Caixinha Geral</strong>
+            <small>Leitura pública</small>
+          </div>
+          <div class="tipo-card" id="cardIndividual" onclick="selecionarTipo('Individual')">
+            <span>✉️</span>
+            <strong>Acampante</strong>
+            <small>Direto no envelope</small>
+          </div>
+        </div>
+
+        <div class="form-group" id="grupoDestinatario" style="display: none;">
+          <label for="selectDestinatario">Escolha o envelope do acampante *</label>
+          <select id="selectDestinatario">
+            <option value="">Carregando envelopes...</option>
+          </select>
+          <p class="hint">Não achou a pessoa? Peça para ela criar o envelope na aba "Criar Envelope".</p>
+        </div>
+
+        <div class="form-group">
+          <label for="textoMensagem">Sua mensagem *</label>
+          <textarea id="textoMensagem" placeholder="Escreva aqui... (Se quiser se identificar, assine no final)" required></textarea>
+        </div>
+
+        <button type="submit" class="action-btn" id="btnEnviar">Enviar Correio 🚀</button>
+        <div id="statusEnviar" class="status"></div>
+      </form>
+    </div>
+
+    <div id="aba-ler" class="tab-content">
+      <form id="formLer">
+        <div class="form-group">
+          <label for="loginNome">Seu Envelope *</label>
+          <select id="loginNome" required>
+            <option value="">Carregando envelopes...</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="loginPin">Seu PIN (4 dígitos) *</label>
+          <input type="password" id="loginPin" maxlength="6" inputmode="numeric" placeholder="****" required>
+        </div>
+
+        <button type="submit" class="action-btn" id="btnLer">Abrir Meu Envelope 🔓</button>
+        <div id="statusLer" class="status"></div>
+      </form>
+
+      <div id="listaMensagens" class="msg-list"></div>
+    </div>
+
+    <div id="aba-criar" class="tab-content">
+      <form id="formCriar">
+        <div class="form-group">
+          <label for="novoNome">Seu Nome ou Apelido *</label>
+          <input type="text" id="novoNome" placeholder="Ex: João Victor / Pedro (Barraca 4)" required>
+          <p class="hint">É assim que seu envelope vai aparecer para quem for te mandar recado.</p>
+        </div>
+
+        <div class="form-group">
+          <label for="novoPin">Crie um PIN secreto (4 dígitos) *</label>
+          <input type="text" id="novoPin" maxlength="4" pattern="\d{4}" inputmode="numeric" placeholder="Ex: 1234" required>
+          <p class="hint">Anote esse número! Você vai precisar dele para abrir seu envelope.</p>
+        </div>
+
+        <button type="submit" class="action-btn" id="btnCriar">Criar Meu Envelope ✨</button>
+        <div id="statusCriar" class="status"></div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyFlLGgPusFUc40mvO31Zn8DFqBE5Oo2zkMD4bZ2Ki1bejOWAsJXTS2vfgptXGOJQMC/exec";
+
+    let tipoAtual = "Geral";
+
+    window.addEventListener("DOMContentLoaded", carregarEnvelopes);
+
+    function mudarAba(aba, btn) {
+      document.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
+      document.querySelectorAll(".tab-btn").forEach(el => el.classList.remove("active"));
+      document.getElementById("aba-" + aba).classList.add("active");
+      btn.classList.add("active");
+    }
+
+    function selecionarTipo(tipo) {
+      tipoAtual = tipo;
+      document.getElementById("cardGeral").classList.toggle("selected", tipo === "Geral");
+      document.getElementById("cardIndividual").classList.toggle("selected", tipo === "Individual");
+      
+      const grupoDest = document.getElementById("grupoDestinatario");
+      const selectDest = document.getElementById("selectDestinatario");
+      
+      if (tipo === "Individual") {
+        grupoDest.style.display = "block";
+        selectDest.required = true;
+      } else {
+        grupoDest.style.display = "none";
+        selectDest.required = false;
+      }
+    }
+
+    async function carregarEnvelopes() {
+      try {
+        const res = await fetch(`${SCRIPT_URL}?action=listarEnvelopes`);
+        const data = await res.json();
+        if (data.status === "sucesso") {
+          const selects = [document.getElementById("selectDestinatario"), document.getElementById("loginNome")];
+          selects.forEach(sel => {
+            sel.innerHTML = '<option value="">Selecione um nome...</option>';
+            data.envelopes.forEach(nome => {
+              const opt = document.createElement("option");
+              opt.value = nome;
+              opt.textContent = nome;
+              sel.appendChild(opt);
+            });
+          });
+        }
+      } catch (err) {
+        console.error("Erro ao carregar envelopes:", err);
+      }
+    }
+
+    document.getElementById("formCriar").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById("btnCriar");
+      const status = document.getElementById("statusCriar");
+      btn.disabled = true;
+      btn.textContent = "Criando...";
+      status.className = "status";
+
+      try {
+        const res = await fetch(SCRIPT_URL, {
+          method: "POST",
+          body: JSON.stringify({
+            action: "criarEnvelope",
+            nome: document.getElementById("novoNome").value,
+            pin: document.getElementById("novoPin").value
+          })
+        });
+        const data = await res.json();
+        if (data.status === "sucesso") {
+          status.className = "status success";
+          status.textContent = data.mensagem;
+          document.getElementById("formCriar").reset();
+          carregarEnvelopes();
+        } else {
+          status.className = "status error";
+          status.textContent = data.mensagem;
+        }
+      } catch (err) {
+        status.className = "status error";
+        status.textContent = "Erro de conexão. Tente novamente.";
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Criar Meu Envelope ✨";
+      }
+    });
+
+    document.getElementById("formEnviar").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById("btnEnviar");
+      const status = document.getElementById("statusEnviar");
+      btn.disabled = true;
+      btn.textContent = "Enviando...";
+      status.className = "status";
+
+      const destinatario = tipoAtual === "Geral"
+        ? "Caixinha Geral"
+        : document.getElementById("selectDestinatario").value;
+
+      try {
+        const res = await fetch(SCRIPT_URL, {
+          method: "POST",
+          body: JSON.stringify({
+            action: "enviarMensagem",
+            tipo: tipoAtual,
+            destinatario: destinatario,
+            mensagem: document.getElementById("textoMensagem").value.trim()
+          })
+        });
+        const data = await res.json();
+        if (data.status === "sucesso") {
+          status.className = "status success";
+          status.textContent = "Correio enviado com sucesso! 🎉";
+          document.getElementById("textoMensagem").value = "";
+        } else {
+          status.className = "status error";
+          status.textContent = data.mensagem;
+        }
+      } catch (err) {
+        status.className = "status error";
+        status.textContent = "Erro ao enviar. Verifique sua internet.";
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Enviar Correio 🚀";
+      }
+    });
+
+    document.getElementById("formLer").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById("btnLer");
+      const status = document.getElementById("statusLer");
+      const lista = document.getElementById("listaMensagens");
+      
+      btn.disabled = true;
+      btn.textContent = "Abrindo...";
+      status.className = "status";
+      lista.innerHTML = "";
+
+      const nome = encodeURIComponent(document.getElementById("loginNome").value);
+      const pin = encodeURIComponent(document.getElementById("loginPin").value);
+
+      try {
+        const res = await fetch(`${SCRIPT_URL}?action=lerEnvelope&nome=${nome}&pin=${pin}`);
+        const data = await res.json();
+
+        if (data.status === "sucesso") {
+          if (data.mensagens.length === 0) {
+            status.className = "status success";
+            status.textContent = `Envelope de ${data.nome} aberto! Ainda não há recados por aqui.`;
+          } else {
+            data.mensagens.forEach(m => {
+              const card = document.createElement("div");
+              card.className = "msg-card";
+              card.innerHTML = `<div class="meta">Recebido em ${m.data}</div><div class="body"></div>`;
+              card.querySelector(".body").textContent = m.texto;
+              lista.appendChild(card);
+            });
+          }
+        } else {
+          status.className = "status error";
+          status.textContent = data.mensagem;
+        }
+      } catch (err) {
+        status.className = "status error";
+        status.textContent = "Erro ao abrir envelope. Tente novamente.";
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Abrir Meu Envelope 🔓";
+      }
+    });
+  </script>
+</body>
+</html>
